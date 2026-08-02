@@ -6,9 +6,10 @@ A multi-page website for **itrola true image** — a creative studio and organic
 
 ## About
 
-itrola true image brings together digital art, physical craft, and holistic well-being under one brand. The site is organized into three pillars:
+itrola true image brings together digital art, physical craft, technology, and holistic well-being under one brand. The site is organized into four pillars:
 
 - **Creative Arts & Digital Design** — Graphic Design, Sculpture, Textiles, Mixed Media
+- **Software & Hardware Solutions** — software development, embedded systems, systems integration, technical consulting
 - **Organic Hub & Sustainable Wellness** — Food Source, Herbal Remedies, Natural First Aid
 - **Innovation & Unique Artifacts** — limited-edition and collaborative projects
 
@@ -18,6 +19,7 @@ itrola true image brings together digital art, physical craft, and holistic well
 |---|---|
 | `index.html` | Home / hero |
 | `ecosystem.html` | Ecosystem overview |
+| `tech-solutions.html` | Software & Hardware Solutions |
 | `arts.html` | Arts & design index |
 | `graphic-design.html` | Graphic Design |
 | `sculpture.html` | Sculpture |
