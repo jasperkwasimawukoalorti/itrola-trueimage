@@ -88,7 +88,7 @@
         <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-12 text-primary-pink">Get in Touch</h2>
 
         <div class="max-w-xl mx-auto bg-gray-800 p-8 rounded-2xl shadow-2xl">
-            <form id="contact-form" class="space-y-6">
+            <form id="contact-form" class="space-y-6" action="https://formspree.io/f/mqpzeyva" method="POST">
                 <div>
                     <label for="name" class="block text-sm font-medium text-light-text mb-1">Name</label>
                     <input type="text" id="name" name="name" class="w-full p-3 rounded-lg bg-dark-bg border border-gray-700 focus:border-secondary-cyan focus:ring-secondary-cyan" placeholder="Your Name" required>
@@ -101,6 +101,7 @@
                     <label for="service" class="block text-sm font-medium text-light-text mb-1">Area of Interest</label>
                     <select id="service" name="service" class="w-full p-3 rounded-lg bg-dark-bg border border-gray-700 focus:border-primary-pink focus:ring-primary-pink">
                         <option value="general">General Inquiry</option>
+                        <option value="software-hardware">Software & Hardware Solutions</option>
                         <option value="graphic">Graphic Design</option>
                         <option value="sculpture">Sculpture</option>
                         <option value="textiles">Textiles</option>
@@ -118,6 +119,7 @@
                     Send Message
                 </button>
                 <div id="contact-message" class="text-center mt-4 text-green-400 font-semibold hidden">Thank you for reaching out! We will be in touch soon.</div>
+                <div id="contact-error" class="text-center mt-4 text-red-400 font-semibold hidden">Something went wrong sending your message. Please try again or email us directly.</div>
             </form>
         </div>
     </section>
@@ -196,15 +198,38 @@
         updateClock();
         setInterval(updateClock, 1000);
 
-        // ---------- Contact form (contact page only) ----------
+        // ---------- Contact form (contact page only) — submits to Formspree ----------
         const contactForm = document.getElementById('contact-form');
         if (contactForm) {
             const contactMessage = document.getElementById('contact-message');
+            const contactError = document.getElementById('contact-error');
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+
             contactForm.addEventListener('submit', function (e) {
                 e.preventDefault();
-                contactForm.reset();
-                contactMessage.classList.remove('hidden');
-                setTimeout(() => contactMessage.classList.add('hidden'), 5000);
+                const originalBtnText = submitBtn.textContent;
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Sending…';
+                if (contactError) contactError.classList.add('hidden');
+
+                fetch(contactForm.action, {
+                    method: 'POST',
+                    body: new FormData(contactForm),
+                    headers: { 'Accept': 'application/json' }
+                }).then(response => {
+                    if (response.ok) {
+                        contactForm.reset();
+                        contactMessage.classList.remove('hidden');
+                        setTimeout(() => contactMessage.classList.add('hidden'), 6000);
+                    } else {
+                        if (contactError) contactError.classList.remove('hidden');
+                    }
+                }).catch(() => {
+                    if (contactError) contactError.classList.remove('hidden');
+                }).finally(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalBtnText;
+                });
             });
         }
     });

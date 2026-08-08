@@ -200,15 +200,38 @@
         updateClock();
         setInterval(updateClock, 1000);
 
-        // ---------- Contact form (contact page only) ----------
+        // ---------- Contact form (contact page only) — submits to Formspree ----------
         const contactForm = document.getElementById('contact-form');
         if (contactForm) {
             const contactMessage = document.getElementById('contact-message');
+            const contactError = document.getElementById('contact-error');
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+
             contactForm.addEventListener('submit', function (e) {
                 e.preventDefault();
-                contactForm.reset();
-                contactMessage.classList.remove('hidden');
-                setTimeout(() => contactMessage.classList.add('hidden'), 5000);
+                const originalBtnText = submitBtn.textContent;
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Sending\u2026';
+                if (contactError) contactError.classList.add('hidden');
+
+                fetch(contactForm.action, {
+                    method: 'POST',
+                    body: new FormData(contactForm),
+                    headers: { 'Accept': 'application/json' }
+                }).then(response => {
+                    if (response.ok) {
+                        contactForm.reset();
+                        contactMessage.classList.remove('hidden');
+                        setTimeout(() => contactMessage.classList.add('hidden'), 6000);
+                    } else {
+                        if (contactError) contactError.classList.remove('hidden');
+                    }
+                }).catch(() => {
+                    if (contactError) contactError.classList.remove('hidden');
+                }).finally(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalBtnText;
+                });
             });
         }
     });
